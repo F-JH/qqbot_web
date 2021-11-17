@@ -30,7 +30,8 @@ export default {
     return {
       logs: [],
       show: false,
-      showImageUrl: ''
+      showImageUrl: '',
+      ws: null
     }
   },
   methods:{
@@ -64,41 +65,53 @@ export default {
       return new Promise((resolve) => {
         setTimeout(() => {resolve()}, ms);
       });
+    },
+    async connectGroup(groupId){
+      if(this.ws == null){
+        this.ws = new WebSocket("ws://119.91.194.230:8080/ws_message");
+      }else{
+        this.ws.close(1000, '正常关闭');
+        while(this.ws.readyState != this.ws.CLOSED){
+          await this.wait(100);
+        }
+        this.ws = new WebSocket("ws://119.91.194.230:8080/ws_message");
+        this.logs.splice(0, this.logs.length);
+      }
+      this.ws.onmessage = (data)=>{
+        let tmpArray;
+        if(data.data == "没有数据"){
+          tmpArray = {id: '', msg: data.data, img: '', name: '系统提示', len: 4*18};
+          // ws.close();
+        }else{
+          let msg = JSON.parse(data.data);
+          tmpArray = {id: msg[1], msg: msg[3], img: msg[4], name: msg[6], len: msg[3].length*18};
+        }
+        // console.log(this.logs);
+        this.$set(this.logs, this.logs.length, tmpArray)
+        // this.logs.push(tmpArray);
+      };
+      this.ws.onclose = ()=>{
+        console.log("关闭连接");
+      };
+      let connect = false;
+      for(let i=0; i<10; i++){
+        if(this.ws.readyState == this.ws.OPEN){
+          console.log("连接到WebSocket服务器...")
+          // ws.send("961530103");
+          this.ws.send(groupId);
+          connect = true;
+          break;
+        }
+        await this.wait(1000);
+      }
+      if(!connect)
+        console.log("连接失败");
     }
   },
   async mounted() {
-    var ws = new WebSocket("ws://119.91.194.230:8080/ws_message");
-    ws.onmessage = (data)=>{
-      let tmpArray;
-      if(data.data == "没有数据"){
-        tmpArray = {id: '', msg: data.data, img: '', name: '系统提示', len: 4*18};
-        // ws.close();
-      }else{
-        let msg = JSON.parse(data.data);
-        tmpArray = {id: msg[1], msg: msg[3], img: msg[4], name: msg[6], len: msg[3].length*18};
-      }
-      // console.log(this.logs);
-      this.$set(this.logs, this.logs.length, tmpArray)
-      // this.logs.push(tmpArray);
-    };
-
-    ws.onclose = ()=>{
-      console.log("关闭连接");
-    };
-
-    for(let i=0; i<10; i++){
-      let connect = false;
-      if(ws.readyState == 1){
-        console.log("连接到WebSocket服务器...")
-        // ws.send("961530103");
-        ws.send("330405140")
-        connect = true;
-        break;
-      }
-      await this.wait(1000);
-    }
-    if(!connect)
-      console.log("连接失败")
+    this.connectGroup("330405140");
+    window.changeGroup = this.connectGroup;
+    window.ws = this.ws;
   },
   watch:{
     logs(newVal){

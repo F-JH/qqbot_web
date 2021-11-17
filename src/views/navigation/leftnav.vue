@@ -231,7 +231,13 @@ export default {
     // 监听
     this.$root.Bus.$on('toggle', value => {
       this.collapsed = !value
-    })
+    });
+    window.test = this.test;
+  },
+  methods: {
+    test(groupId){
+      console.log(groupId);
+    }
   }
 }
 </script>
