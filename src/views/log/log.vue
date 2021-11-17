@@ -14,6 +14,11 @@
         <el-button v-if="log.img" @click="showimg(log.img)" icon="el-icon-picture" style="margin-top: 5px" :style="{marginLeft: log.msg?'0px':'10px'}" circle></el-button>
       </li>
     </ul>
+    <el-footer style="margin-top: 30px;">
+      <transition name="el-zoom-in-center">
+        <el-button v-show="reflech" @click="connectGroup('330405140')">点击重连</el-button>
+      </transition>
+    </el-footer>
     <el-dialog :visible.sync="show">
       <el-image referrerPolicy="no-referrer" :src="showImageUrl">
       </el-image>
@@ -31,7 +36,8 @@ export default {
       logs: [],
       show: false,
       showImageUrl: '',
-      ws: null
+      ws: null,
+      reflech: false
     }
   },
   methods:{
@@ -74,6 +80,7 @@ export default {
         while(this.ws.readyState != this.ws.CLOSED){
           await this.wait(100);
         }
+        this.reflech = false;
         this.ws = new WebSocket("ws://119.91.194.230:8080/ws_message");
         this.logs.splice(0, this.logs.length);
       }
@@ -97,6 +104,7 @@ export default {
           type: 'warning'
         });
         console.log("关闭连接");
+        this.reflech = true;
       };
       let connect = false;
       for(let i=0; i<10; i++){
@@ -123,6 +131,7 @@ export default {
           type: 'warning'
         });
         console.log("连接失败");
+        this.reflech = true;
       }
     }
   },
