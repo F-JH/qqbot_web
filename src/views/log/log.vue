@@ -91,11 +91,23 @@ export default {
         // this.logs.push(tmpArray);
       };
       this.ws.onclose = ()=>{
+        this.$notify({
+          title: '警告',
+          message: '连接被关闭，请确认是否是你手动触发的',
+          type: 'warning'
+        });
         console.log("关闭连接");
       };
       let connect = false;
       for(let i=0; i<10; i++){
         if(this.ws.readyState == this.ws.OPEN){
+          const h = this.$createElement;
+          this.$notify({
+            title: '成功',
+            message: h('i', {style: 'color: teal'}, '成功连接到WebSocket服务器！'),
+            type:'success'
+          });
+
           console.log("连接到WebSocket服务器...")
           // ws.send("961530103");
           this.ws.send(groupId);
@@ -104,8 +116,14 @@ export default {
         }
         await this.wait(1000);
       }
-      if(!connect)
+      if(!connect){
+        this.$notify({
+          title: '警告',
+          message: '连接失败!',
+          type: 'warning'
+        });
         console.log("连接失败");
+      }
     }
   },
   async mounted() {
