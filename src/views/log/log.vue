@@ -16,7 +16,7 @@
     </ul>
     <el-footer style="margin-top: 30px;">
       <transition name="el-zoom-in-center">
-        <el-button v-show="reflech" @click="connectGroup('330405140')">点击重连</el-button>
+        <el-button v-show="reflech" @click="connectGroup(groupId)">点击重连</el-button>
       </transition>
     </el-footer>
     <el-dialog :visible.sync="show">
@@ -33,11 +33,14 @@ export default {
   name: "log",
   data(){
     return {
+      domain: 'localhost:8080',
       logs: [],
       show: false,
       showImageUrl: '',
       ws: null,
+      startHeart: false, // 是否启动心跳包
       reflech: false,
+      groupId: '',
       groups: [
           '330405140',
           '473755421',
@@ -47,27 +50,22 @@ export default {
     }
   },
   methods:{
-    load(){
-      axios.get('/api/message/show-list')
-        .then((response)=>{
-          let res = JSON.parse(response.data);
-          console.log(res);
-          let groupMsg = res["330405140"];
-          // let groupMsg = res["747819422"];
-          // let groupMsg = res["473755421"];
-          // let groupMsg = res["961530103"];
-          let tmpArray = [];
-          for(let msg of groupMsg){
-            tmpArray.push({id: msg[1], msg: msg[3], img: msg[4], name: msg[6], len: msg[3].length*18});
-          }
-          this.logs = tmpArray;
-        });
-    },
-    testLoad(){
-      // let tmpArray = {id: 's', msg: '尼玛', img: '', name: '半夏', len: 2*18};
-      // this.$set(this.logs, this.logs.length, tmpArray);
-      console.log(this.logs);
-    },
+    // load(){
+    //   axios.get('/api/message/show-list')
+    //     .then((response)=>{
+    //       let res = JSON.parse(response.data);
+    //       console.log(res);
+    //       let groupMsg = res["330405140"];
+    //       // let groupMsg = res["747819422"];
+    //       // let groupMsg = res["473755421"];
+    //       // let groupMsg = res["961530103"];
+    //       let tmpArray = [];
+    //       for(let msg of groupMsg){
+    //         tmpArray.push({id: msg[1], msg: msg[3], img: msg[4], name: msg[6], len: msg[3].length*18});
+    //       }
+    //       this.logs = tmpArray;
+    //     });
+    // },
     showimg(url){
       this.showImageUrl = url;
       this.show = true;
@@ -79,30 +77,39 @@ export default {
       });
     },
     async connectGroup(groupId){
+      this.groupId = groupId;
       if(this.ws == null){
-        this.ws = new WebSocket("ws://119.91.194.230:8080/ws_message");
+        this.ws = new WebSocket("ws://" + this.domain + "/ws_message");
       }else{
         this.ws.close(1000, '正常关闭');
         while(this.ws.readyState != this.ws.CLOSED){
           await this.wait(100);
         }
         this.reflech = false;
-        this.ws = new WebSocket("ws://119.91.194.230:8080/ws_message");
+        this.ws = new WebSocket("ws://" + this.domain + "/ws_message");
         this.logs.splice(0, this.logs.length);
       }
+
+      this.startHeart = false;
+
       this.ws.onmessage = (data)=>{
         let tmpArray;
-        if(data.data == "没有数据"){
-          tmpArray = {id: '', msg: data.data, img: '', name: '系统提示', len: 4*18};
-          // ws.close();
+        if(data.data == "没有这个群的数据"){
+          tmpArray = {id: '', msg: data.data, img: '', name: '系统提示', len: 8*18};
+          this.ws.close(1000, '没有数据，关闭通道');
+          this.$set(this.logs, this.logs.length, tmpArray)
+        }else if(data.data == "end"){
+          this.ws.send(JSON.stringify({code:200, groupId:this.groupId}));
+          this.startHeart = true;
+        }else if(data.data == "已经是最新数据"){
+
         }else{
           let msg = JSON.parse(data.data);
           tmpArray = {id: msg[1], msg: msg[3], img: msg[4], name: msg[6], len: msg[3].length*18};
+          this.$set(this.logs, this.logs.length, tmpArray)
         }
-        // console.log(this.logs);
-        this.$set(this.logs, this.logs.length, tmpArray)
-        // this.logs.push(tmpArray);
       };
+
       this.ws.onclose = (e)=>{
         this.$notify({
           title: '警告',
@@ -125,7 +132,7 @@ export default {
 
           console.log("连接到WebSocket服务器...")
           // ws.send("961530103");
-          this.ws.send(groupId);
+          this.ws.send(JSON.stringify({code:300, groupId:groupId}));
           connect = true;
           break;
         }
@@ -144,16 +151,26 @@ export default {
   },
   async mounted() {
     this.connectGroup("330405140");
+    // this.connectGroup('961530103');
     window.changeGroup = this.connectGroup;
     window.ws = this.ws;
     window.groups = this.groups;
+    window.logs = this.logs;
   },
   watch:{
     logs(newVal){
       if(newVal.length >= 200){
         newVal.splice(0, 1);
       }
-      // console.log(newVal);
+    },
+    async startHeart(newVal, oldVal){
+      if(newVal){
+        let tmpWs = this.ws;
+        while(tmpWs.readyState == 1){
+          await this.wait(15000);
+          tmpWs.send(JSON.stringify({code:100, groupId:this.groupId, timestamp: new Date().getDate()}));
+        }
+      }
     }
   }
 }
