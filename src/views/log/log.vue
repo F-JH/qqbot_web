@@ -37,7 +37,13 @@ export default {
       show: false,
       showImageUrl: '',
       ws: null,
-      reflech: false
+      reflech: false,
+      groups: [
+          '330405140',
+          '473755421',
+          '747819422',
+          '961530103'
+      ]
     }
   },
   methods:{
@@ -139,6 +145,7 @@ export default {
     this.connectGroup("330405140");
     window.changeGroup = this.connectGroup;
     window.ws = this.ws;
+    window.groups = this.groups;
   },
   watch:{
     logs(newVal){
