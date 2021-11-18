@@ -71,7 +71,7 @@ export default {
     showimg(url){
       this.showImageUrl = url;
       this.show = true;
-      console.log(url);
+      // console.log(url);
     },
     wait(ms){
       return new Promise((resolve) => {
@@ -103,13 +103,14 @@ export default {
         this.$set(this.logs, this.logs.length, tmpArray)
         // this.logs.push(tmpArray);
       };
-      this.ws.onclose = ()=>{
+      this.ws.onclose = (e)=>{
         this.$notify({
           title: '警告',
           message: '连接被关闭，请确认是否是你手动触发的',
           type: 'warning'
         });
-        console.log("关闭连接");
+        console.log("连接断开: " + e.code + '|' + e.reason + '|' + e.wasClean);
+        console.log(e);
         this.reflech = true;
       };
       let connect = false;
