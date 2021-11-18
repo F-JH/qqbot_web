@@ -33,7 +33,7 @@ export default {
   name: "log",
   data(){
     return {
-      domain: 'localhost:8080',
+      domain: '119.91.194.230:8080',
       logs: [],
       show: false,
       showImageUrl: '',
