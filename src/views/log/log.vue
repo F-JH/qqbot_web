@@ -107,7 +107,7 @@ export default {
         }else{
           let msg = JSON.parse(data.data);
           if(msg.length == 2){
-            for(let log in this.logs){
+            for(let log of this.logs){
               if(log.id == msg[1])
                 log.color = '#7b8c9d';
             }
