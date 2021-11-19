@@ -8,7 +8,7 @@
         <div class="message" style="width: 110px; align-items: center">
           <div :title="log.name">{{log.name.substr(0, 4)}}{{(log.name.length>4)?"...：":":"}}</div>
         </div>
-        <div class="message" :style="'width:' + log.len + 'px'" style="align-items: center; margin-left: 10px;" v-if="log.msg">
+        <div class="message" :style="{'width':log.len + 'px', 'backgroundColor':log.color}" style="align-items: center; margin-left: 10px;" v-if="log.msg">
           {{log.msg}}
         </div>
         <el-button v-if="log.img" @click="showimg(log.img)" icon="el-icon-picture" style="margin-top: 5px" :style="{marginLeft: log.msg?'0px':'10px'}" circle></el-button>
@@ -33,7 +33,8 @@ export default {
   name: "log",
   data(){
     return {
-      domain: '119.91.194.230:8080',
+      // domain: '119.91.194.230:8080',
+      domain: 'localhost:8080',
       logs: [],
       show: false,
       showImageUrl: '',
@@ -95,7 +96,7 @@ export default {
       this.ws.onmessage = (data)=>{
         let tmpArray;
         if(data.data == "没有这个群的数据"){
-          tmpArray = {id: '', msg: data.data, img: '', name: '系统提示', len: 8*18};
+          tmpArray = {id: '', msg: data.data, img: '', name: '系统提示', len: 8*18, color: '#f56c6c'};
           this.ws.close(1000, '没有数据，关闭通道');
           this.$set(this.logs, this.logs.length, tmpArray)
         }else if(data.data == "end"){
@@ -105,8 +106,15 @@ export default {
 
         }else{
           let msg = JSON.parse(data.data);
-          tmpArray = {id: msg[1], msg: msg[3], img: msg[4], name: msg[6], len: msg[3].length*18};
-          this.$set(this.logs, this.logs.length, tmpArray)
+          if(msg.length == 2){
+            for(let log in this.logs){
+              if(log.id == msg[1])
+                log.color = '#7b8c9d';
+            }
+          }else{
+            tmpArray = {id: msg[1], msg: msg[3], img: msg[4], name: msg[6], len: msg[3].length*18, color:msg[0]?'#7b8c9d':''};
+            this.$set(this.logs, this.logs.length, tmpArray);
+          }
         }
       };
 
@@ -185,6 +193,7 @@ export default {
   /*width: 350px;*/
   padding: 30px 35px 15px 35px;
   background: #fff;
+  /*color: #f56c6c;*/
   border: 1px solid #eaeaea;
   text-align: left;
   box-shadow: 0 0 20px 2px rgba(0, 0, 0, 0.1);
