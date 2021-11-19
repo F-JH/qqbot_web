@@ -168,7 +168,7 @@ export default {
         let tmpWs = this.ws;
         while(tmpWs.readyState == 1){
           await this.wait(15000);
-          tmpWs.send(JSON.stringify({code:100, groupId:this.groupId, timestamp: new Date().getDate()}));
+          tmpWs.send(JSON.stringify({code:100, groupId:this.groupId, timestamp: new Date().getTime()}));
         }
       }
     }
