@@ -33,8 +33,9 @@ export default {
   name: "log",
   data(){
     return {
-      domain: '119.91.194.230:8080',
+      // domain: '119.91.194.230:8080',
       // domain: 'localhost:8080',
+      domain: this.$root.Bus.config.domain,
       logs: [],
       show: false,
       showImageUrl: '',

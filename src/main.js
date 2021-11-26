@@ -6,6 +6,9 @@ import router from './router'
 
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
+
+const config = require('../static/config/config');
+
 Vue.use(ElementUI)
 
 import axios from 'axios'
@@ -25,7 +28,13 @@ new Vue({
   components: { App },
   template: '<App/>',
   data: {
-    Bus: new Vue()
+    Bus: new Vue({
+      data(){
+        return {
+          config: config
+        }
+      }
+    })
   }
   // render: h => h(App)
 })

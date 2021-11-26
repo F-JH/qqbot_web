@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import UserInfo from './test/UserInfo.vue'
+// import UserInfo from './test/UserInfo.vue'
 export default {
   name: 'App',
   data() {
@@ -84,7 +84,7 @@ export default {
     });
   },
   components: {
-    UserInfo
+    // UserInfo
   }
 }
 </script>

@@ -20,29 +20,29 @@ export default new Router({
       name: 'index',
       component: index,
       children: [
-        {path: 'UserInfo', name: '用户信息', component: UserInfor},
+        // {path: 'UserInfo', name: '用户信息', component: UserInfor},
         {path: 'log', name: '日志', component: log}
       ]
-    },
-    {
-      path: '/UserInfo',
-      name: 'UserInfo',
-      component: UserInfor
-    },
-    {
-      path: '/AddUser',
-      name: 'AddUser',
-      component: AddUser
-    },
-    {
-      path: '/createUser',
-      name: 'create',
-      component: EditUser
-    },
-    {
-      path: '/myTest',
-      name: 'test',
-      component: myTest
     }
+    // {
+    //   path: '/UserInfo',
+    //   name: 'UserInfo',
+    //   component: UserInfor
+    // },
+    // {
+    //   path: '/AddUser',
+    //   name: 'AddUser',
+    //   component: AddUser
+    // },
+    // {
+    //   path: '/createUser',
+    //   name: 'create',
+    //   component: EditUser
+    // },
+    // {
+    //   path: '/myTest',
+    //   name: 'test',
+    //   component: myTest
+    // }
   ]
 })
