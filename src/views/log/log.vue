@@ -11,7 +11,7 @@
         <div class="message" :style="{'width':log.len + 'px', 'backgroundColor':log.color}" style="align-items: center; margin-left: 10px;" v-if="log.msg">
           {{log.msg}}
         </div>
-        <el-button v-if="log.img" @click="showimg(log.img)" icon="el-icon-picture" style="margin-top: 5px" :style="{marginLeft: log.msg?'0px':'10px'}" circle></el-button>
+        <el-button v-if="log.img" @click="showimg(log.img)" icon="el-icon-picture" style="margin-top: 5px" :style="{marginLeft: log.msg?'0px':'10px', 'backgroundColor':log.color}" circle></el-button>
       </li>
     </ul>
     <el-footer style="margin-top: 30px;">
