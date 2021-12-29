@@ -159,8 +159,10 @@ export default {
     }
   },
   async mounted() {
-    this.connectGroup("330405140");
+    let group_id = this.$route.query.groupId;
+    // this.connectGroup("330405140");
     // this.connectGroup('961530103');
+    this.connectGroup(group_id);
     window.changeGroup = this.connectGroup;
     window.ws = this.ws;
     window.groups = this.groups;
