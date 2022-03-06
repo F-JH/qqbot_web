@@ -13,9 +13,12 @@
     "axios": "^0.24.0",
     "element-ui": "^2.15.6",
     "moment": "^2.29.1",
+    "video.js": "^7.17.0",
+    "videojs-contrib-hls": "^5.15.0",
     "vue": "^2.5.2",
     "vue-resource": "^1.5.3",
-    "vue-router": "^3.5.3"
+    "vue-router": "^3.5.3",
+    "vue-video-player": "^5.0.2"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

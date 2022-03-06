@@ -207,6 +207,14 @@ export default {
               hasThird: 'N',
               url: 'index/log',
               menus: null
+            },
+            {
+              menuid: 26,
+              icon: 'el-icon-collection',
+              menuname: '直播间',
+              hasThird: 'N',
+              url: 'index/live',
+              menus: null
             }
           ]
         }

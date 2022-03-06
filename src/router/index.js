@@ -9,6 +9,7 @@ import UserInfor from '../test/UserInfo.vue'
 
 import index from '../views/index.vue'
 import log from '../views/log/log.vue'
+import live from '../views/live/live.vue'
 
 Vue.use(Router)
 
@@ -21,7 +22,8 @@ export default new Router({
       component: index,
       children: [
         // {path: 'UserInfo', name: '用户信息', component: UserInfor},
-        {path: 'log', name: '日志', component: log}
+        {path: 'log', name: '日志', component: log},
+        {path: 'live', name: '直播间', component: live}
       ]
     }
     // {
