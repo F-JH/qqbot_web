@@ -7,7 +7,7 @@
         class="video-js vjs-default-skin"
         style="width: 100%; height: 100%; object-fit: fill"
     >
-      <source src="http://xiao.xlfjh.ml:8080/hls/ar414.m3u8" type="application/x-mpegURL" />
+      <source src="http://xiao.xlfjh.ml:8088/hls/ar414.m3u8" type="application/x-mpegURL" />
     </video>
   </div>
 </template>
